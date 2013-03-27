@@ -658,7 +658,19 @@ void MallocChecker::checkPostObjCMessage(const ObjCMethodCall &Call,
 ProgramStateRef MallocChecker::MallocMemReturnsAttr(CheckerContext &C,
                                                     const CallExpr *CE,
                                                     const OwnershipAttr* Att) {
-  if (Att->getModule() != "malloc")
+  SVal Init;
+
+  if (Att->getModule() == "malloc")
+    Init = UndefinedVal();
+  else if (Att->getModule() == "calloc") {
+    // Hack Hack Hack - "calloc" isn't a module.  Need some other way
+    // to indicate initialized memory
+
+    ProgramStateRef state = C.getState();
+    SValBuilder &svalBuilder = C.getSValBuilder();
+
+    Init = svalBuilder.makeZeroVal(svalBuilder.getContext().CharTy);
+  } else
     return 0;
 
   OwnershipAttr::args_iterator I = Att->args_begin(), E = Att->args_end();
