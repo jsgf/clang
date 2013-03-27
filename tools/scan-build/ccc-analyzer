@@ -329,6 +329,7 @@ my %CompileOptionMap = (
   '-fno-builtin' => 0,
   '-fobjc-gc-only' => 0,
   '-fobjc-gc' => 0,
+  '-fms-extensions' => 0,
   '-ffreestanding' => 0,
   '-include' => 1,
   '-idirafter' => 1,
